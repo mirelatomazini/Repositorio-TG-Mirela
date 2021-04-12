@@ -16,6 +16,7 @@
 //#include <cr4_fft_stm32.h> - Acredito ser para transpormada rápida de Fourier, mas não tenho certeza absoluta
 //#include <table_fft.h>
 
+#include <STM32ADC.h>
 #include <SPI.h>
 #include <cr4_fft_stm32.h>
 
@@ -151,12 +152,10 @@ void loop() {
   dma_disable(DMA1, DMA_CH1);                    // end of DMA trasfer
   
   for (h=0; h<=BUFFER_SIZE; h = h+1){
-    Serial.println(BUFFER_SIZE[h]);
+    Serial.println(in[h]);
   }
   // Para esse for não é BUFFER_SIZE, pode ser: data16, data32, pois todos são vetores e têm o tamanho do BUFFER_SIZE. TAMBÉM FIQUE ATENTA AO QUE A REAL_TO_COMPLEX esta fazendo.
   
-  real_to_complex(data16, data32, BUFFER_SIZE);  // data format conversion
-  //perform_fft(data32, y, BUFFER_SIZE);           // FFT computation
 
   delay(50);
 
