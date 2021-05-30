@@ -68,18 +68,24 @@ void setup() {
   adc_calibrate(ADC1);                                  //funcao que calibra o ADC
 }
 
-void loop() {
-  // funcao usada para realizar a aquisicao;
-  setADCs();                                            // chama a funcao que configura o ADC
+void DMA_(){
+
   dma_init(DMA1);
-  dma_attach_interrupt(DMA1, DMA_CH1, DMA1_CH1_Event);  //cria uma interrupcao para a transferencia de dados
-  adc_dma_enable(ADC1);                                 //habilita dma do ADC
+  dma_attach_interrupt(DMA1, DMA_CH1, DMA1_CH1_Event);      //cria uma interrupcao para a transferencia de dados
+  adc_dma_enable(ADC1);                                     //habilita dma do ADC
   dma_setup_transfer(DMA1, DMA_CH1, &ADC1->regs->DR, DMA_SIZE_16BITS, data16, DMA_SIZE_16BITS, (DMA_MINC_MODE | DMA_TRNS_CMPLT));
   // configura a tranferencia pelo DMA
-  dma_set_num_transfers(DMA1, DMA_CH1, BUFFER_SIZE); // configura a quantdade de informacao a ser transferida pelo DMA
+  dma_set_num_transfers(DMA1, DMA_CH1, BUFFER_SIZE);        // configura a quantdade de informacao a ser transferida pelo DMA
+  
+}
+
+void loop() {
+  // funcao usada para realizar a aquisicao;
+  setADCs();                                         // chama a funcao que configura o ADC
+  DMA_();                                            // chama a funcao que configura o DMA 
   dma1_ch1_Active = 1;                               // muda o valor da variavel booleana para habilitar a coleta
   dma_enable(DMA1, DMA_CH1);                         // habilita o canal DMA e inicia a transferencia
-
+  
   while (dma1_ch1_Active) {};                        // aguardando a interrupcao mudar o valor da variavel booleana para encerrar a aquisicao
   dma_disable(DMA1, DMA_CH1);                        // finaliza a aquisição 
 
