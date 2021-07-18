@@ -7,6 +7,8 @@
 
 /* a primeira parte do codigo importa as bibliotecas e cria variaveis globais */
 #include <STM32ADC.h>                                   //inclui a biblioteca do STM32 para ADC
+//#include <math.h> 
+
 
 static const uint8_t CHANNEL_1 = PB0;                   //define o pino em que sera adquirido o sinal do canal 1
 
@@ -96,5 +98,24 @@ void loop() {
   }                                              // printa os valores adquiridos apos realizar a conversao para valores de tensao
     
   delay(1000);                                   //aguarda 1000 ms para iniciar o processo novamente
+  
+}
+
+void DFT(float data[],float freq, float sample_freq){
+  float pi        = 3.1415;
+  float Freal     = 0;        
+  float Fimag     = 0;
+  float amplit    = 0;
+  float phase     = 0;
+  int n            = lenght(data[]);                           //definindo o tamanho do vetor, ou seja, quantidade de dados                      
+  float df         = sample_freq/n;                            //definindo a diferenca entre 2 amostras subsequentes (em frequencia?)
+  double k         = freq/sample_freq;                         // definir k em termos de frequencia de amostragem e frequencia do sinal
+  
+  for (int m = 0; m<n; m++){
+    Freal = Freal + data[m]*cos(k*m*2*pi/n);
+    Fimag = Fimag + data[m]*sin(k*m*2*pi/n);
+  }
+  amplit = sqrt(pow(Freal,2)+pow(Fimag,2))/n/2;
+  //phase = atan2(Fimag,Freal);
   
 }
