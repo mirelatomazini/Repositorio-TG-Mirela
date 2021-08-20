@@ -8,19 +8,19 @@
 
 //#include <math.h>
 
-//#define _USE_MATH_DEFINES - talvez tenha que usar para funcaionar M_PI
+//#define _USE_MATH_DEFINES - talvez tenha que usar para funcionar M_PI
 //#include <cmath> - talvez tenha que usar para funcaionar M_PI
 
 double calc_dft_singfreq(float data[],float freq, float sample_freq, int factor_z=1){
   // funcao calcula a dft de uma unica frequencia
-
+  // testando salvar
   
   float Freal     = 0;        
   float Fimag     = 0;
   float amplit    = 0;
   float phase     = 0;
-  int nreal       = lenght(data[]);                           //definindo o tamanho do vetor, ou seja, quantidade de dados 
-  int n           = nreal*factor;                   
+  int nreal       = sizeof(data)/sizeof(data[0]);                           //definindo o tamanho do vetor, ou seja, quantidade de dados 
+  int n           = nreal*factor_z;                   
   float df        = sample_freq/n;                            //definindo a df entre 2 amostras subsequentes (em frequencia)
   int k           = round(freq/sample_freq);                  // definindo k em termos de frequencia de amostragem e frequencia do sinal
   
@@ -50,8 +50,8 @@ float search_fpeak (float data[],float f_peak, float sample_freq, int factor = 1
   
 
   for(int cont=0; cont<num; cont++){
-    freq_value[cont]    = (f_peak(1-faixa)) + cont*sttep;
-    freq_datadft[cont]  = calc_dft_singfreq(data[],freq_value[cont],sample_freq, factor);
+    freq_value[cont]    = (f_peak*(1-faixa)) + cont*sttep;
+    freq_datadft[cont]  = calc_dft_singfreq(data,freq_value[cont],sample_freq, factor);
   }
   
   for(int cont=0; cont<num; cont++){
@@ -79,7 +79,7 @@ float search_fpeak_initial (float data[], float sample_freq, int factor = 10000,
 
   for(int cont=0; cont<num; cont++){
     freq_value[cont]    = f_peak_i + cont*sttep;
-    freq_datadft[cont]  = calc_dft_singfreq(data[],freq_value[cont],sample_freq, factor);
+    freq_datadft[cont]  = calc_dft_singfreq(data,freq_value[cont],sample_freq, factor);
   }
   
   for(int cont=0; cont<num; cont++){
