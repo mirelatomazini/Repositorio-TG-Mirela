@@ -11,8 +11,8 @@
 #include "dft.h"
 
 int cont = 0;
-float peak = 0;
-float sample_freq=0;
+float fpeak = 1100;
+float sample_freq=2571000;
 static const uint8_t CHANNEL_1 = PB0;                   //define o pino em que sera adquirido o sinal do canal 1
 
 static const uint16_t ADC_RESOLUTION = 4096;            // units - define uma variavel com a resolucao do ADC
@@ -31,7 +31,7 @@ uint16_t data16[BUFFER_SIZE];                          // cria um vetor que poss
 
 volatile static bool dma1_ch1_Active;                 // variavel boleana que grava a informacao se a coleta do sinal esta ocorrendo ou nao
 
-void configADC() {
+void setADCs() {
   //determina em qual dos casos deve ser selecionado o DT_PRE a depender do valor inserido na variavel time_base
   switch (DT_PRE[time_base]) {
     case 0: rcc_set_prescaler(RCC_PRESCALER_ADC, RCC_ADCPRE_PCLK_DIV_2); break;
@@ -87,7 +87,7 @@ void DMA_(){
 void loop() {
   // funcao usada para realizar a aquisicao;
   
-  //setADCs();                                         // chama a funcao que configura o ADC
+  setADCs();                                         // chama a funcao que configura o ADC
   DMA_();                                            // chama a funcao que configura o DMA 
   dma1_ch1_Active = 1;                               // muda o valor da variavel booleana para habilitar a coleta
   dma_enable(DMA1, DMA_CH1);                         // habilita o canal DMA e inicia a transferencia
@@ -98,12 +98,13 @@ void loop() {
 
   int h;                                         //cria uma variavel inteira 
   for (h=0; h<=BUFFER_SIZE; h = h+1){            //cria um laco com o tamanho do buffer para realizar a tranferencia das informacoes         
-    Serial.println(data16[h]*VCC_3_3/4096.0);
+    //Serial.println(data16[h]*VCC_3_3/4096.0);
   }                                              // printa os valores adquiridos apos realizar a conversao para valores de tensao
     
   delay(1000);                                   //aguarda 1000 ms para iniciar o processo novamente
-  if(cont<1){
-    peak = search_fpeak_initial(data16,sample_freq);
-    cont = cont+1;
-  }
+  
+  fpeak = search_fpeak(data16,fpeak, sample_freq);
+  //Serial.println(fpeak);
+    
+  
 }
