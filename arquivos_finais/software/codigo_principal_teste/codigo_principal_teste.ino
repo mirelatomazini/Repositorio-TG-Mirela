@@ -105,6 +105,7 @@ void loop() {
   
   fpeak = search_fpeak(data16,fpeak, sample_freq);
   //Serial.println(fpeak);
+  // gravando
     
   
 }

@@ -19,7 +19,7 @@ double calc_dft_singfreq(uint16_t data[],float freq, float sample_freq, int fact
   float Fimag     = 0;
   float amplit    = 0;
   float phase     = 0;
-  int nreal       = BUFFER_SIZE;                           //definindo o tamanho do vetor, ou seja, quantidade de dados 
+  int nreal       = 1024;                           //definindo o tamanho do vetor, ou seja, quantidade de dados 
   int n           = nreal*factor_z;                   
   float df        = sample_freq/n;                            //definindo a df entre 2 amostras subsequentes (em frequencia)
   int k           = round(freq/sample_freq);                  // definindo k em termos de frequencia de amostragem e frequencia do sinal
