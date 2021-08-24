@@ -11,7 +11,7 @@
 //#define _USE_MATH_DEFINES - talvez tenha que usar para funcionar M_PI
 //#include <cmath> - talvez tenha que usar para funcaionar M_PI
 
-double calc_dft_singfreq(uint16_t data[],float freq, float sample_freq, int factor_z=1){
+double calc_dft_singfreq(uint16_t *data,float freq, float sample_freq, int factor_z=1){
   // funcao calcula a dft de uma unica frequencia
   // testando salvar
   
@@ -20,23 +20,23 @@ double calc_dft_singfreq(uint16_t data[],float freq, float sample_freq, int fact
   float amplit    = 0;
   float phase     = 0;
   int nreal       = 1024;                           //definindo o tamanho do vetor, ou seja, quantidade de dados 
-  int n           = nreal*factor_z;                   
+  float n         = nreal*factor_z;                   
   float df        = sample_freq/n;                            //definindo a df entre 2 amostras subsequentes (em frequencia)
-  int k           = round(freq/sample_freq);                  // definindo k em termos de frequencia de amostragem e frequencia do sinal
+  float k           = round(freq/df);                  // definindo k em termos de frequencia de amostragem e frequencia do sinal
   
   for (int m = 0; m<nreal; m++){
-    Freal = Freal + data[m]*cos(k*m*2*M_PI/n);
-    Fimag = Fimag + data[m]*sin(k*m*2*M_PI/n);
+    Freal = Freal + (data[m]-2048.0)*cos(k*m*2.0*M_PI/n);
+    Fimag = Fimag + (data[m]-2048.0)*sin(k*m*2.0*M_PI/n);
   }
-  amplit = sqrt(pow(Freal,2)+pow(Fimag,2))/(n/2);
+  amplit = sqrt(pow(Freal,2)+pow(Fimag,2))/(n/2.0);
   phase = atan2(Fimag,Freal);
   
-  Serial.println(amplit);
+  //Serial.println(amplit);
   return amplit;
 
 }
 
-float search_fpeak (uint16_t data[],float f_peak, float sample_freq, int factor = 10000, float faixa = 0.1, int n_p = 50){
+float search_fpeak (uint16_t *data,float f_peak, float sample_freq, int factor = 10000, float faixa = 0.1, int n_p = 50){
   // funcao procura pelo frequencia de pico 
 
   int sttep       = (f_peak*faixa)/(n_p/2);
@@ -52,11 +52,11 @@ float search_fpeak (uint16_t data[],float f_peak, float sample_freq, int factor 
 
   for(int cont=0; cont<num; cont++){
     freq_value[cont]    = (f_peak*(1-faixa)) + cont*sttep;
-    Serial.println(freq_value[cont]);
+    //Serial.println(freq_value[cont]);
     freq_datadft[cont]  = calc_dft_singfreq(data,freq_value[cont],sample_freq, factor);
-    Serial.println(freq_datadft[cont]);
-    Serial.println(cont);
-    Serial.println(num);
+    //Serial.println(freq_datadft[cont]);
+    //Serial.println(cont);
+    //Serial.println(num);
   }
   
   for(int cont=0; cont<num; cont++){
@@ -71,7 +71,7 @@ float search_fpeak (uint16_t data[],float f_peak, float sample_freq, int factor 
 }
 
 
-float search_fpeak_initial (uint16_t data[], float sample_freq, int factor = 10000, int n_p = 50, float f_peak_i = 1000, float f_peak_f =20000, int sttep = 100){
+float search_fpeak_initial (uint16_t *data, float sample_freq, int factor = 10000, int n_p = 50, float f_peak_i = 100, float f_peak_f =20000, int sttep = 100){
   // funcao procura pelo frequencia de pico na inicialização do programa
 
   int num         = (f_peak_f-f_peak_i)/sttep;
@@ -85,6 +85,10 @@ float search_fpeak_initial (uint16_t data[], float sample_freq, int factor = 100
   for(int cont=0; cont<num; cont++){
     freq_value[cont]    = f_peak_i + cont*sttep;
     freq_datadft[cont]  = calc_dft_singfreq(data,freq_value[cont],sample_freq, factor);
+    Serial.print(freq_value[cont]);
+    Serial.print(" ");
+    Serial.println(freq_datadft[cont]*factor);
+
   }
   
   for(int cont=0; cont<num; cont++){
@@ -93,6 +97,8 @@ float search_fpeak_initial (uint16_t data[], float sample_freq, int factor = 100
       f_peak_real   = freq_value[cont];
     }
   }
+  
+
 
   return f_peak_real;
 
