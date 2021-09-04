@@ -85,9 +85,9 @@ float search_fpeak_initial (uint16_t *data, float sample_freq, int factor = 1000
   for(int cont=0; cont<num; cont++){
     freq_value[cont]    = f_peak_i + cont*sttep;
     freq_datadft[cont]  = calc_dft_singfreq(data,freq_value[cont],sample_freq, factor);
-    Serial.print(freq_value[cont]);
-    Serial.print(" ");
-    Serial.println(freq_datadft[cont]*factor);
+    //Serial.print(freq_value[cont]);
+    //Serial.print(" ");
+    //Serial.println(freq_datadft[cont]*factor);
 
   }
   
@@ -96,10 +96,46 @@ float search_fpeak_initial (uint16_t *data, float sample_freq, int factor = 1000
       peak          = freq_datadft[cont];
       f_peak_real   = freq_value[cont];
     }
+    
   }
-  
-
+  Serial.print(peak);
+  Serial.print(" ");
+  Serial.println(f_peak_real);
 
   return f_peak_real;
 
+}
+float search_fpeak_initial_faster (uint16_t *data, float sample_freq, float fpeak){
+  // funcao procura pelo frequencia de pico na inicialização do programa
+
+  float minim       = 0;
+  
+  if((fpeak-40000)>0){
+    minim = fpeak-40000;
+  }
+  
+  fpeak = search_fpeak_initial (data, sample_freq, 10000, 50, minim, fpeak+40000,10000); //realiza 8 calculos
+  
+  if((fpeak-10000)>0){
+    minim = fpeak-10000;
+  }
+  
+  fpeak = search_fpeak_initial (data, sample_freq, 10000, 50, minim, fpeak+10000,1000); //realiza 10 calculos
+  
+  if((fpeak-1000)>0){
+    minim = fpeak-1000;
+  }
+  fpeak = search_fpeak_initial (data, sample_freq, 10000, 50, minim, fpeak+1000,100); //realiza 10 calculos
+  
+  if((fpeak-100)>0){
+    minim = fpeak-100;
+  }
+  fpeak = search_fpeak_initial (data, sample_freq, 10000, 50, minim, fpeak+100,10); //realiza 10 calculos
+  
+  if((fpeak-10)>0){
+    minim = fpeak-10;
+  }
+  fpeak = search_fpeak_initial (data, sample_freq, 10000, 50, minim, fpeak+10,1); //realiza 10 calculos
+
+  return fpeak;
 }

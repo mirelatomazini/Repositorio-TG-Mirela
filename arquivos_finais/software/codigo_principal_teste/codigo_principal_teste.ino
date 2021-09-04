@@ -11,8 +11,8 @@
 
 int cont                  = 0;
 float fpeak               = 1100;
-uint8_t time_base         = 6;
-float sample_freq         = DT_FS[time_base]*1000;
+uint8_t time_base         = 0;
+float sample_freq         = DT_FS[time_base];
 static const uint8_t CHANNEL = PB0;                   //define o pino em que sera adquirido o sinal do canal 1
 
 static const uint16_t BUFFER_SIZE = 1024;               // bytes - define uma variavel com informacao do tamanho do buffer em bytes
@@ -24,6 +24,7 @@ uint16_t data16[BUFFER_SIZE];                          // cria um vetor que poss
 
 void setup() {
   adc_calibrate(ADC1);                                  //funcao que calibra o ADC
+  Serial.begin(115200);
 }
 
 
@@ -41,9 +42,9 @@ void loop() {
 
   int h;                                         //cria uma variavel inteira 
   for (h=0; h<BUFFER_SIZE; h = h+1){            //cria um laco com o tamanho do buffer para realizar a tranferencia das informacoes         
-    Serial.print(data16[h]*VCC_3_3/4096.0);
-    Serial.print(" ");
-    Serial.println(data16[h]*VCC_3_3/4096.0);
+    //Serial.print(data16[h]*VCC_3_3/4096.0);
+    //Serial.print(" ");
+    //Serial.println(data16[h]*VCC_3_3/4096.0);
 
   }                                              // printa os valores adquiridos apos realizar a conversao para valores de tensao
     
