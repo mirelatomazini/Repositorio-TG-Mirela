@@ -6,7 +6,7 @@ static const uint16_t ADC_RESOLUTION = 4096;            // units - define uma va
 
 const uint8_t DT_PRE[]  = {2,         3,        2,        3,          3,        2,        2,        3,       2}; 
 const uint8_t DT_SMPR[] = {0,         0,        1,        1,          2,        3,        6,        6,       7};
-const float DT_FS[]     = {857143,    642857,   60000,    450000,     346154,   292683,   142857,   107143,  47619};
+const float DT_FS[]     = {857143,    642857,   600000,    450000,     346154,   292683,   142857,   107143,  47619};
 
 volatile static bool dma1_ch1_Active;                 // variavel boleana que grava a informacao se a coleta do sinal esta ocorrendo ou nao
 
@@ -50,7 +50,7 @@ void adc_dma_enable(const adc_dev * dev) {
   bb_peri_set_bit(&dev->regs->CR2, ADC_CR2_DMA_BIT, 1);
 }
 
-void DMA_(uint16_t *data16,uint16_t BUFFER_SIZE){
+void DMA_(uint16_t *data16){
 
   dma_init(DMA1);
   dma_attach_interrupt(DMA1, DMA_CH1, DMA1_CH1_Event);      //cria uma interrupcao para a transferencia de dados
