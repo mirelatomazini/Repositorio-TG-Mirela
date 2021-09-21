@@ -10,7 +10,7 @@
 #define FREQ0 200000
 #define FREQ1 20000
 #define FREQ2 2000
-#define BUFFER_SIZE 6000
+#define BUFFER_SIZE 6000 
 #define VCC_3_3 3.3
 
 #include "adc_proj.h"
@@ -22,8 +22,6 @@ float fpeak               = 1100;
 uint8_t time_base         = 2;
 float sample_freq         = DT_FS[time_base];
 static const uint8_t CHANNEL = PB0;                   //define o pino em que sera adquirido o sinal do canal 1
-
-
 uint16_t data16[BUFFER_SIZE];                          // cria um vetor que possui a quantidade de dados igual ao buffer_size 1024
 
 
@@ -60,7 +58,8 @@ void loop() {
     fpeak = search_fpeak_initial_faster (data16, sample_freq, FREQ1);
     flag_inicial = 0;
   }
-  fpeak = search_fpeak_initial (data16, sample_freq, 10000, 50, fpeak-5, fpeak+6,1); 
+  fpeak = search_fpeak_initial(data16, sample_freq, 10000, 50, fpeak-5, fpeak+6,1,BUFFER_SIZE); 
+  fpeak = test1 (data16, sample_freq, 10000, 50,fpeak-5, fpeak+6,1);
 
   
 }
