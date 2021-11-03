@@ -4,9 +4,9 @@
 static const uint16_t ADC_RESOLUTION = 4096;            // units - define uma variavel com a resolucao do ADC
 
 
-const uint8_t DT_PRE[]  = {2,         3,        2,        3,          3,        2,        2,        3,       2}; 
-const uint8_t DT_SMPR[] = {0,         0,        1,        1,          2,        3,        6,        6,       7};
-const float DT_FS[]     = {857143,    642857,   600000,    450000,     346154,   292683,   142857,   107143,  47619};
+const uint8_t DT_PRE[]  = {2,         3,        2,        3,          3,        2,        2,        3,       2,      0}; 
+const uint8_t DT_SMPR[] = {0,         0,        1,        1,          2,        3,        6,        6,       7,      0};
+const float DT_FS[]     = {857143,    642857,   600000,    450000,     346154,   292683,   142857,   107143,  47619, 2571428};
 
 volatile static bool dma1_ch1_Active;                 // variavel boleana que grava a informacao se a coleta do sinal esta ocorrendo ou nao
 

@@ -99,9 +99,9 @@ float search_fpeak_initial (uint16_t *data, float sample_freq, int factor = 1000
     }
     
   }
-  Serial.print(peak, 6);
-  Serial.print(" ******** ");
-  Serial.println(f_peak_real, 2);
+  //Serial.print(peak, 6);
+  //Serial.print(" *** ");
+  //Serial.println(f_peak_real, 2);
 
   return f_peak_real;
 
@@ -110,19 +110,22 @@ float search_fpeak_initial_faster (uint16_t *data, float sample_freq, float fpea
   // funcao procura pelo frequencia de pico na inicialização do programa
 
   float minim       = 0;
-  
-  if((fpeak-40000)>0){
-    minim = fpeak-40000;
+
+  if (1==2){
+    
+    if((fpeak-40000)>0){
+      minim = fpeak-40000;
+    }
+    
+    fpeak = search_fpeak_initial (data, sample_freq, 10000, 50, minim, fpeak+40000,10000); //realiza 8 calculos
+    
+    if((fpeak-10000)>0){
+      minim = fpeak-10000;
+    }
+    
+    fpeak = search_fpeak_initial (data, sample_freq, 10000, 50, minim, fpeak+10000,1000); //realiza 10 calculos
+
   }
-  
-  fpeak = search_fpeak_initial (data, sample_freq, 10000, 50, minim, fpeak+40000,10000); //realiza 8 calculos
-  
-  if((fpeak-10000)>0){
-    minim = fpeak-10000;
-  }
-  
-  fpeak = search_fpeak_initial (data, sample_freq, 10000, 50, minim, fpeak+10000,1000); //realiza 10 calculos
-  
   if((fpeak-1000)>0){
     minim = fpeak-1000;
   }
@@ -142,7 +145,7 @@ float search_fpeak_initial_faster (uint16_t *data, float sample_freq, float fpea
 }
 
 
-float test1 (uint16_t *data, float sample_freq, int factor = 10000, int n_p = 50, float f_peak_i = 100, float f_peak_f =20000,float sttep = 100, float pontos=BUFFER_SIZE){
+float test1 (uint16_t *data, float sample_freq, int factor = 10000, int n_p = 50, float f_peak_i = 100, float f_peak_f =3000,float sttep = 100, float pontos=BUFFER_SIZE){
   float media = 0;
   media = sinal_medio(data);
   int num         = (f_peak_f-f_peak_i)/sttep;
@@ -199,7 +202,7 @@ float test1 (uint16_t *data, float sample_freq, int factor = 10000, int n_p = 50
   float freq_value2[num];
   float freq_datadft2[num];
 
-
+  
   for(int cont=0; cont<num; cont++){
     freq_value2[cont]    = f_peak_i + cont*sttep;
     freq_datadft2[cont]  = calc_dft_singfreq(data,freq_value2[cont],sample_freq,media,factor,600);
@@ -217,6 +220,7 @@ float test1 (uint16_t *data, float sample_freq, int factor = 10000, int n_p = 50
   Serial.print(" ******** ");
   Serial.print(f_peak_real2, 2);
   Serial.print(" ");
+  
 
   float f_peak_real3 = 0;
   float peak3        = 0;
@@ -241,6 +245,7 @@ float test1 (uint16_t *data, float sample_freq, int factor = 10000, int n_p = 50
   Serial.print(f_peak_real3, 2);
   Serial.print(" ");
 
+  
   float f_peak_real4 = 0;
   float peak4        = 0;
   float freq_value4[num];
@@ -248,7 +253,7 @@ float test1 (uint16_t *data, float sample_freq, int factor = 10000, int n_p = 50
 
   for(int cont=0; cont<num; cont++){
     freq_value4[cont]    = f_peak_i + cont*sttep;
-    freq_datadft4[cont]  = calc_dft_singfreq(data,freq_value4[cont],sample_freq,media,factor,30);
+    freq_datadft4[cont]  = calc_dft_singfreq(data,freq_value4[cont],sample_freq,media,factor,60);
   }
   
   for(int cont=0; cont<num; cont++){
@@ -261,8 +266,66 @@ float test1 (uint16_t *data, float sample_freq, int factor = 10000, int n_p = 50
 
   Serial.print(peak4, 6);
   Serial.print(" ******** ");
-  Serial.println(f_peak_real4, 2);
+  Serial.print(f_peak_real4, 2);
+  Serial.print(" ");
 
-  return f_peak_real4;
+
+  
+  
+  float f_peak_real5 = 0;
+  float peak5        = 0;
+  float freq_value5[num];
+  float freq_datadft5[num];
+
+  for(int cont=0; cont<num; cont++){
+    freq_value5[cont]    = f_peak_i + cont*sttep;
+    freq_datadft5[cont]  = calc_dft_singfreq(data,freq_value5[cont],sample_freq,media,factor,30);
+  }
+  
+  for(int cont=0; cont<num; cont++){
+    if(freq_datadft5[cont]>peak5){
+      peak5          = freq_datadft5[cont];
+      f_peak_real5   = freq_value5[cont];
+    }
+    
+  }
+
+  Serial.print(peak5, 6);
+  Serial.print(" ******** ");
+  Serial.print(f_peak_real5, 2);
+  Serial.print(" ");
+
+  float f_peak_real6 = 0;
+  float peak6        = 0;
+  float freq_value6[num];
+  float freq_datadft6[num];
+
+  for(int cont=0; cont<num; cont++){
+    freq_value6[cont]    = f_peak_i + cont*sttep;
+    freq_datadft6[cont]  = calc_dft_singfreq(data,freq_value6[cont],sample_freq,media,factor,3);
+  }
+  
+  for(int cont=0; cont<num; cont++){
+    if(freq_datadft6[cont]>peak6){
+      peak6          = freq_datadft6[cont];
+      f_peak_real6   = freq_value6[cont];
+    }
+    
+  }
+
+  Serial.print(peak6, 6);
+  Serial.print(" ******** ");
+  Serial.print(f_peak_real6, 2);
+  Serial.println(" DADOS ");
+
+  if(1==2){
+    for (int i=0; i<6000; i++){
+      Serial.print(data[i]);
+      Serial.print(" ");
+    }
+    
+    Serial.println(" ");
+  }
+  return f_peak_real6;
 
 }

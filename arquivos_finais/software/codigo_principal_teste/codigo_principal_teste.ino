@@ -47,19 +47,22 @@ void loop() {
 
 
   int h;                                         //cria uma variavel inteira 
-  for (h=0; h<BUFFER_SIZE; h = h+1){            //cria um laco com o tamanho do buffer para realizar a tranferencia das informacoes         
-    //Serial.print(data16[h]*VCC_3_3/4096.0);
-    //Serial.print(" ");
-    //Serial.println(data16[h]*VCC_3_3/4096.0);
-
-  }                                              // printa os valores adquiridos apos realizar a conversao para valores de tensao
-  if(flag_inicial){
-    //fpeak = search_fpeak_initial (data16, sample_freq, 10000, 50, 0, 2000,10); 
-    fpeak = search_fpeak_initial_faster (data16, sample_freq, FREQ1);
-    flag_inicial = 0;
+  if(1==2){
+    for (h=0; h<BUFFER_SIZE; h = h+1){            //cria um laco com o tamanho do buffer para realizar a tranferencia das informacoes         
+      Serial.print(data16[h]*VCC_3_3/4096.0);
+      Serial.print(" ");
+      Serial.println(data16[h]*VCC_3_3/4096.0);
+    }
   }
-  fpeak = search_fpeak_initial(data16, sample_freq, 10000, 50, fpeak-5, fpeak+6,1,BUFFER_SIZE); 
-  fpeak = test1 (data16, sample_freq, 10000, 50,fpeak-5, fpeak+6,1);
+                                                // printa os valores adquiridos apos realizar a conversao para valores de tensao
+  if(1==1){
+    if(flag_inicial){
+      //fpeak = search_fpeak_initial (data16, sample_freq, 10000, 50, 0, 2000,10); 
+      fpeak = search_fpeak_initial_faster (data16, sample_freq, FREQ1);
+      flag_inicial = 0;
+    }
+    fpeak = search_fpeak_initial(data16, sample_freq, 10000, 50, fpeak-5, fpeak+6,1,BUFFER_SIZE); 
+    fpeak = test1 (data16, sample_freq, 10000, 50,fpeak-5, fpeak+6,1);
 
-  
+  }
 }
