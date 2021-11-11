@@ -9,8 +9,7 @@
 
 #define FREQ0 200000
 #define FREQ1 20000
-#define FREQ2 2000
-#define BUFFER_SIZE 600 
+#define BUFFER_SIZE 60 
 #define VCC_3_3 3.3
 
 #include "adc_proj.h"
@@ -20,6 +19,8 @@ int flag_inicial          = 1;
 int cont                  = 0;
 float fpeak1              = 0;
 float fpeak2              = 0;
+float ampl1              = 0;
+float ampl2              = 0;
 uint8_t time_base         = 2;
 float sample_freq         = DT_FS[time_base];
 static const uint8_t CHANNEL = PB0;                   //define o pino em que sera adquirido o sinal do canal 1
@@ -46,23 +47,21 @@ void loop() {
   while (dma1_ch1_Active) {};                        // aguardando a interrupcao mudar o valor da variavel booleana para encerrar a aquisicao
   dma_disable(DMA1, DMA_CH1);                        // finaliza a aquisição 
 
+ 
+  
+  if(flag_inicial){ 
+    fpeak1 = search_fpeak_initial_faster (data16, sample_freq, FREQ0);
+    fpeak2 = search_fpeak_initial_faster (data16, sample_freq, FREQ1);
+    flag_inicial = 0;
+  }
+  //fpeak1 = search_fpeak_initial(data16, sample_freq, 10000, 50, fpeak1-240, fpeak1+245,5,BUFFER_SIZE); 
+  //fpeak2 = search_fpeak_initial(data16, sample_freq, 10000, 50, fpeak2-20,  fpeak2+25,5,BUFFER_SIZE);
 
-  int h;                                         //cria uma variavel inteira 
-  if(1==2){
-    for (h=0; h<BUFFER_SIZE; h = h+1){            //cria um laco com o tamanho do buffer para realizar a tranferencia das informacoes         
-      Serial.print(data16[h]*VCC_3_3/4096.0);
-      Serial.print(" ");
-      Serial.println(data16[h]*VCC_3_3/4096.0);
-    }
-  }
-                                                // printa os valores adquiridos apos realizar a conversao para valores de tensao
-  if(1==1){
-    if(flag_inicial){ 
-      fpeak1 = search_fpeak_initial_faster (data16, sample_freq, FREQ0);
-      fpeak2 = search_fpeak_initial_faster (data16, sample_freq, FREQ1);
-      flag_inicial = 0;
-    }
-    fpeak1 = search_fpeak_initial(data16, sample_freq, 10000, 50, fpeak1-240, fpeak1+245,5,BUFFER_SIZE); 
-    fpeak2 = search_fpeak_initial(data16, sample_freq, 10000, 50, fpeak2-20,  fpeak2+25,5,BUFFER_SIZE);
-  }
+  ampl1 = calc_dft_singfreq(data16,fpeak1,sample_freq,1.7,10000,6,1);
+  ampl2 = calc_dft_singfreq(data16,fpeak2,sample_freq,1.7,10000,60,6);
+  
+  Serial.print(ampl1);
+  Serial.print("\t");
+  Serial.println(ampl2);
+
 }

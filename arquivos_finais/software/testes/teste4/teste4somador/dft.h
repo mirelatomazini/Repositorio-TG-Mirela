@@ -17,22 +17,22 @@ float sinal_medio (uint16_t *data){
 }
 
 
-double calc_dft_singfreq(uint16_t *data,float freq, float sample_freq, float media, int factor_z=1000, float pontos=BUFFER_SIZE){
+double calc_dft_singfreq(uint16_t *data,float freq, float sample_freq, float media, int factor_z=1000, float pontos=BUFFER_SIZE, int ds=1){
   
   double Freal     = 0;        
   double Fimag     = 0;
   double amplit    = 0;
   float phase     = 0;
-  float nreal     = pontos;                           //definindo o tamanho do vetor, ou seja, quantidade de dados 
+  float nreal     = pontos/ds;                           //definindo o tamanho do vetor, ou seja, quantidade de dados 
   float n         = nreal*factor_z;                   
-  float df        = sample_freq/n;                            //definindo a df entre 2 amostras subsequentes (em frequencia)
+  float df        = sample_freq/(n*ds);                            //definindo a df entre 2 amostras subsequentes (em frequencia)
   float k         = round(freq/df);                  // definindo k em termos de frequencia de amostragem e frequencia do sinal
 
   for (int m = 0; m<nreal; m++){
-    Freal = Freal + (data[m]-media)*cos(k*m*2.0*M_PI/n);
-    Fimag = Fimag + (data[m]-media)*sin(k*m*2.0*M_PI/n);
+    Freal = Freal + (data[m*ds]-media)*cos(k*m*2.0*M_PI/n);
+    Fimag = Fimag + (data[m*ds]-media)*sin(k*m*2.0*M_PI/n);
   }
-  amplit = (sqrt(pow(Freal,2)+pow(Fimag,2))/(nreal/2.0))*3.3/4096.0;
+  amplit = (sqrt(pow(Freal,2)+pow(Fimag,2))/((nreal)/2.0))*3.3/4096.0;
   phase = atan2(Fimag,Freal);
 
   //Serial.print(freq);
@@ -100,14 +100,20 @@ float search_fpeak_initial (uint16_t *data, float sample_freq, int factor = 1000
     
   }
 
-  if (1==1){
+  if (f_peak_real>100000){
     Serial.print(peak, 6);
-    Serial.print(" ******** ");
+    Serial.print("\t");
     Serial.print(f_peak_real, 2);
-    Serial.print(" ");
+    Serial.print("\t");
+  }
+  else {
+    Serial.print(peak, 6);
+    Serial.print("\t");
+    Serial.print(f_peak_real, 2);
+    Serial.println("");
   }
  
-  if(1==1){
+  if(1==2){
     for (int i=0; i<BUFFER_SIZE; i++){
       Serial.print(data[i]);
       Serial.print(" ");
