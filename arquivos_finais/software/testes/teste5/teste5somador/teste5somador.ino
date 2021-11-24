@@ -126,6 +126,7 @@ void loop() {
     float dif20 = phase_v20-phase_i20;
     if(dif200>0) dif200=dif200-6.2830;
     if(dif20>0) dif20=dif20-6.2830;
+    
     Serial.print(dif200*180/3.1415);
     Serial.print("gr\t");
     Serial.print(dif20*180/3.1415);
